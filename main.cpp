@@ -87,6 +87,19 @@ void Main() {
         U"TREES",
     };
 
+    using GenFunc = std::vector<std::vector<int>> (*)(int, int, int, int);
+    constexpr GenFunc FUNCS[] {
+        gen_wild_heng,
+        gen_wild_bluh,
+    };
+    std::size_t func_idx = 0;
+    const auto func = [&]() { return FUNCS[func_idx]; };
+
+    const s3d::Array<s3d::String> FUNC_LABELS {
+        U"Hengband",
+        U"Bluh",
+    };
+
     auto grid = gen_wild_heng(GRID_W, GRID_H, preset().denom(), 1);
 
     while(s3d::System::Update()) {
@@ -103,11 +116,15 @@ void Main() {
         }
 
         if(s3d::SimpleGUI::Button(U"Generate", {1020,20})) {
-            grid = gen_wild_heng(GRID_W, GRID_H, preset().denom(), 1);
+            grid = func()(GRID_W, GRID_H, preset().denom(), 1);
         }
 
         if(s3d::SimpleGUI::RadioButtons(preset_idx, PRESET_LABELS, {1020,60})) {
-            grid = gen_wild_heng(GRID_W, GRID_H, preset().denom(), 1);
+            grid = func()(GRID_W, GRID_H, preset().denom(), 1);
+        }
+
+        if(s3d::SimpleGUI::RadioButtons(func_idx, FUNC_LABELS, {1020,600})) {
+            grid = func()(GRID_W, GRID_H, preset().denom(), 1);
         }
 
         if(s3d::SimpleGUI::Button(U"Reset Cam", {1020,750})) {

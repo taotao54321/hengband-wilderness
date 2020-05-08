@@ -61,9 +61,63 @@ void plasma_recursive_heng(
     plasma_recursive_heng(grid, xmid, ymid, x2,   y2,   denom, rough);  // 右下
 }
 
+int ds_get(Grid& grid, const int x, const int y) {
+    const int h = size(grid);
+    const int w = size(grid[0]);
+
+    const int xx = modulo(x, w);
+    const int yy = modulo(y, h);
+
+    return grid[yy][xx];
+}
+
+void ds_square(Grid& grid, const int x, const int y, const int len, const int denom, const int rough) {
+    int sum = 0;
+    sum += ds_get(grid, y-len/2, x-len/2);
+    sum += ds_get(grid, y-len/2, x+len/2);
+    sum += ds_get(grid, y+len/2, x-len/2);
+    sum += ds_get(grid, y+len/2, x+len/2);
+
+    const int avg = div_ceil(sum, 4);
+    const int rnd = s3d::Random(-rough, rough);
+
+    grid[y][x] = std::clamp(avg+rnd, 0, denom-1);
+}
+
+void ds_diamond(Grid& grid, const int x, const int y, const int len, const int denom, const int rough) {
+    int sum = 0;
+    sum += ds_get(grid, y      , x-len/2);
+    sum += ds_get(grid, y      , x+len/2);
+    sum += ds_get(grid, y-len/2, x      );
+    sum += ds_get(grid, y+len/2, x      );
+
+    const int avg = div_ceil(sum, 4);
+    const int rnd = s3d::Random(-rough, rough);
+
+    grid[y][x] = std::clamp(avg+rnd, 0, denom-1);
+}
+
+void diamond_square(Grid& grid, const int len, const int denom, const int rough) {
+    const int h = size(grid);
+    const int w = size(grid[0]);
+
+    for(int y = len/2; y < h; y += len) {
+        for(int x = len/2; x < w; x += len) {
+            ds_square(grid, x, y, len, denom, rough);
+        }
+    }
+
+    for(int y = 0; y < h; y += len) {
+        for(int x = 0; x < w; x += len) {
+            ds_diamond(grid, x+len/2, y,       len, denom, rough);
+            ds_diamond(grid, x,       y+len/2, len, denom, rough);
+        }
+    }
+}
+
 }  // anonymous namespace
 
-Grid gen_wild_heng(int w, int h, int denom, int rough) {
+Grid gen_wild_heng(const int w, const int h, const int denom, const int rough) {
     Grid grid(h, std::vector<int>(w));
 
     grid[0  ][0  ] = s3d::Random(0, denom-1);
@@ -74,4 +128,29 @@ Grid gen_wild_heng(int w, int h, int denom, int rough) {
     plasma_recursive_heng(grid, 0, 0, w-1, h-1, denom, rough);
 
     return grid;
+}
+
+/**
+ * http://www.bluh.org/code-the-diamond-square-algorithm/
+ */
+Grid gen_wild_bluh(const int w, const int h, const int denom, const int rough) {
+    const int L = pow2_ceil(std::max(w,h));
+
+    Grid grid(L, std::vector<int>(L));
+    grid[0  ][0  ] = s3d::Random(0, denom-1);
+    grid[0  ][L/2] = s3d::Random(0, denom-1);
+    grid[L/2][0  ] = s3d::Random(0, denom-1);
+    grid[L/2][L/2] = s3d::Random(0, denom-1);
+
+    for(int len = L/2; len > 1; len /= 2)
+        diamond_square(grid, len, denom, rough);
+
+    Grid res(h, std::vector<int>(w));
+    for(int y = 0; y < h; ++y) {
+        for(int x = 0; x < w; ++x) {
+            res[y][x] = grid[y][x];
+        }
+    }
+
+    return res;
 }
