@@ -26,9 +26,15 @@ struct Feature {
     Color color;
 };
 
-constexpr Feature FEAT_FLOOR  { '.', COLOR_WHITE      };
-constexpr Feature FEAT_DIRT   { '.', COLOR_UMBER      };
-constexpr Feature FEAT_FLOWER { ':', COLOR_LIGHTGREEN };
-constexpr Feature FEAT_BRAKE  { ':', COLOR_GREEN      };
-constexpr Feature FEAT_GRASS  { '.', COLOR_GREEN      };
-constexpr Feature FEAT_TREE   { '#', COLOR_LIGHTGREEN };
+constexpr Feature FEAT_BRAKE         { ':', COLOR_GREEN      };
+constexpr Feature FEAT_DEEP_LAVA     { '~', COLOR_RED        };
+constexpr Feature FEAT_DEEP_WATER    { '~', COLOR_BLUE       };
+constexpr Feature FEAT_DIRT          { '.', COLOR_UMBER      };
+constexpr Feature FEAT_FLOOR         { '.', COLOR_WHITE      };
+constexpr Feature FEAT_FLOWER        { ':', COLOR_LIGHTGREEN };
+constexpr Feature FEAT_GRASS         { '.', COLOR_GREEN      };
+constexpr Feature FEAT_MOUNTAIN      { '^', COLOR_ORANGE     };
+constexpr Feature FEAT_SHALLOW_LAVA  { '~', COLOR_LIGHTUMBER };
+constexpr Feature FEAT_SHALLOW_WATER { '~', COLOR_LIGHTBLUE  };
+constexpr Feature FEAT_SWAMP         { '.', COLOR_LIGHTBLUE  };
+constexpr Feature FEAT_TREE          { '#', COLOR_LIGHTGREEN };

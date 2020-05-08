@@ -46,11 +46,8 @@ void Main() {
     constexpr int GRID_W = 198;
     constexpr int GRID_H =  66;
 
-    constexpr int WIN_W = 1000;
+    constexpr int WIN_W = 1200;
     constexpr int WIN_H =  800;
-
-    s3d::Scene::SetScaleMode(s3d::ScaleMode::ResizeFill);
-    s3d::Window::SetStyle(s3d::WindowStyle::Sizable);
 
     const Term term(FONT_PATH, FONT_SIZE);
 
@@ -62,8 +59,35 @@ void Main() {
 
     s3d::Camera2D camera(FLOOR_SIZE/2, 0.5);
 
-    auto preset = Preset::GRASS();
-    auto grid = gen_wild_heng(GRID_W, GRID_H, preset.denom(), 1);
+    const std::reference_wrapper<const Preset> PRESETS[] {
+        Preset::DEEP_LAVA(),
+        Preset::DEEP_WATER(),
+        Preset::DESERT(),
+        Preset::DIRT(),
+        Preset::GRASS(),
+        Preset::MOUNTAIN(),
+        Preset::SHALLOW_LAVA(),
+        Preset::SHALLOW_WATER(),
+        Preset::SWAMP(),
+        Preset::TREES(),
+    };
+    std::size_t preset_idx = 4;
+    const auto preset = [&]() { return PRESETS[preset_idx].get(); };
+
+    const s3d::Array<s3d::String> PRESET_LABELS {
+        U"DEEP_LAVA",
+        U"DEEP_WATER",
+        U"DESERT",
+        U"DIRT",
+        U"GRASS",
+        U"MOUNTAIN",
+        U"SHALLOW_LAVA",
+        U"SHALLOW_WATER",
+        U"SWAMP",
+        U"TREES",
+    };
+
+    auto grid = gen_wild_heng(GRID_W, GRID_H, preset().denom(), 1);
 
     while(s3d::System::Update()) {
         camera.update();
@@ -72,14 +96,25 @@ void Main() {
 
             for(int r = 0; r < GRID_H; ++r) {
                 for(int c = 0; c < GRID_W; ++c) {
-                    const auto& feat = preset.feat(grid[r][c]);
+                    const auto& feat = preset().feat(grid[r][c]);
                     term.draw_char(c, r, feat.symbol, feat_color(feat));
                 }
             }
         }
 
-        if(s3d::SimpleGUI::Button(U"Generate", {850,50})) {
-            grid = gen_wild_heng(GRID_W, GRID_H, preset.denom(), 1);
+        if(s3d::SimpleGUI::Button(U"Generate", {1020,20})) {
+            grid = gen_wild_heng(GRID_W, GRID_H, preset().denom(), 1);
+        }
+
+        if(s3d::SimpleGUI::RadioButtons(preset_idx, PRESET_LABELS, {1020,60})) {
+            grid = gen_wild_heng(GRID_W, GRID_H, preset().denom(), 1);
+        }
+
+        if(s3d::SimpleGUI::Button(U"Reset Cam", {1020,750})) {
+            camera.setCenter(FLOOR_SIZE/2);
+            camera.setTargetCenter(FLOOR_SIZE/2);
+            camera.setScale(0.5);
+            camera.setTargetScale(0.5);
         }
 
         camera.draw();
