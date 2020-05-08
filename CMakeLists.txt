@@ -9,7 +9,9 @@ pkg_check_modules(OPENCV4 REQUIRED opencv4)
 set(Target wilderness)
 
 add_executable(${Target}
+    gen.cpp
     main.cpp
+    preset.cpp
 )
 
 target_compile_features(${Target} PRIVATE cxx_std_17)
