@@ -1,5 +1,7 @@
 # 変愚蛮怒 荒野マップ生成
 
+![Screenshot](https://raw.githubusercontent.com/taotao54321/hengband-wilderness/master/screenshot.gif)
+
 ## Prerequisites
 
 [OpenSiv3D](https://github.com/Siv3D/OpenSiv3D) を使っています。Linux の場合、
