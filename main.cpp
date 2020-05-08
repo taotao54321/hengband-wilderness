@@ -100,6 +100,8 @@ void Main() {
         U"Bluh",
     };
 
+    const int rough = 2;
+
     auto grid = gen_wild_heng(GRID_W, GRID_H, preset().denom(), 1);
 
     while(s3d::System::Update()) {
@@ -116,15 +118,15 @@ void Main() {
         }
 
         if(s3d::SimpleGUI::Button(U"Generate", {1020,20})) {
-            grid = func()(GRID_W, GRID_H, preset().denom(), 1);
+            grid = func()(GRID_W, GRID_H, preset().denom(), rough);
         }
 
         if(s3d::SimpleGUI::RadioButtons(preset_idx, PRESET_LABELS, {1020,60})) {
-            grid = func()(GRID_W, GRID_H, preset().denom(), 1);
+            grid = func()(GRID_W, GRID_H, preset().denom(), rough);
         }
 
         if(s3d::SimpleGUI::RadioButtons(func_idx, FUNC_LABELS, {1020,600})) {
-            grid = func()(GRID_W, GRID_H, preset().denom(), 1);
+            grid = func()(GRID_W, GRID_H, preset().denom(), rough);
         }
 
         if(s3d::SimpleGUI::Button(U"Reset Cam", {1020,750})) {
