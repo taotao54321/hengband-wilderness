@@ -43,20 +43,21 @@ s3d::Color feat_color(const Feature& feat) {
 }
 
 void Main() {
-    s3d::Scene::SetScaleMode(s3d::ScaleMode::ResizeFill);
-    s3d::Window::SetStyle(s3d::WindowStyle::Sizable);
-
-    Term term(FONT_PATH, FONT_SIZE);
-
     constexpr int GRID_W = 198;
     constexpr int GRID_H =  66;
 
+    constexpr int WIN_W = 1000;
+    constexpr int WIN_H =  800;
+
+    s3d::Scene::SetScaleMode(s3d::ScaleMode::ResizeFill);
+    s3d::Window::SetStyle(s3d::WindowStyle::Sizable);
+
+    const Term term(FONT_PATH, FONT_SIZE);
+
     const auto FLOOR_SIZE = s3d::Size{GRID_W,GRID_H} * term.ch_size();
 
-    const int WIN_W = 800 + 200;
-    const int WIN_H = 800 * FLOOR_SIZE.y / FLOOR_SIZE.x;
-
     // Linux では centering=false にしないとウィンドウが画面外へ飛ぶバグがある (Siv3D 0.4.3)
+    // https://github.com/Siv3D/OpenSiv3D/issues/506
     s3d::Window::Resize(WIN_W, WIN_H, s3d::WindowResizeOption::ResizeSceneSize, false);
 
     s3d::Camera2D camera(FLOOR_SIZE/2, 0.5);
